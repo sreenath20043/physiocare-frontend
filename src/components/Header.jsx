@@ -1,11 +1,21 @@
 // src/components/Header.jsx
+import { Avatar, Dropdown, DropdownDivider, DropdownHeader, DropdownItem } from 'flowbite-react';
 import { Activity } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBars, FaTimes, FaHeartbeat, FaChevronDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import Profile from '../user/components/Profile';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [userData , setUserData]= useState({})
+  let userDetails = JSON.parse(sessionStorage.getItem('userDetails'))
+  console.log(userDetails);
+  
+  useEffect(()=>{
+    setUserData(userDetails)
+  },[])
 
   return (
     <header className=" top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -27,7 +37,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-10">
             <Link to="/" className="text-gray-700 hover:text-[#23b7d9] font-medium text-sm">
               Home
             </Link>
@@ -38,19 +48,50 @@ const Header = () => {
               Services
             </Link>
             <Link to="/alldoctors" className="text-gray-700 hover:text-[#23b7d9]  font-medium text-sm">
-              Doctors
+              Booking
             </Link>
-            <Link to="/videos" className="text-gray-700 hover:text-[#23b7d9]  font-medium text-sm">
+            {/* <Link to="/videos" className="text-gray-700 hover:text-[#23b7d9]  font-medium text-sm">
               Videos
-            </Link>
+            </Link> */}
             <Link to="/contact" className="text-gray-700 hover:text-[#23b7d9]  font-medium text-sm">
               Contact
             </Link>
-           <Link to={'/login'}>
+             <Link to="/doctorportal" className="text-gray-700 hover:text-[#23b7d9]  font-medium text-sm">
+               Doctor Portal
+            </Link>
+            
+          
+           {
+            userData?
+               <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar alt="User settings" img={userData.profile} rounded />
+            }
+          >
+            <DropdownHeader>
+              <span className="block text-sm">{userData.username}</span>
+              <span className="block truncate text-sm font-medium">{userData.email}</span>
+            </DropdownHeader>
+            {/* <DropdownItem>Dashboard</DropdownItem> */}
+            <Link to={''}><DropdownItem>Profile</DropdownItem></Link>
+            <DropdownDivider />
+
+            <Link to={'/login'}><DropdownItem>Sign out</DropdownItem></Link>
+
+          </Dropdown> 
+            :
+              <Link to={'/login'}>
               <button className="ml-4 px-6 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors text-sm">
                 Sign-in
               </button>
            </Link>
+           }
+           
+          
+          
+           
           </div>
 
           {/* Mobile menu button */}
@@ -81,26 +122,38 @@ const Header = () => {
             >
               Home
             </Link>
-            <div className="px-3 py-2">
-              <button className="flex items-center text-base font-medium text-gray-700">
-                Pages <FaChevronDown className="ml-1 text-xs" />
-              </button>
-              {/* Mobile dropdown menu would go here */}
-            </div>
+
             <Link
-              to="/services"
+              to="/about"
+              className="block px-3 py-2 rounded-md text-base font-medium text-blue-600"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About
+            </Link>
+          
+
+            <Link
+              to="/service"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
               onClick={() => setIsMenuOpen(false)}
             >
               Services
             </Link>
             <Link
-              to="/doctors"
+              to="/alldoctors"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
               onClick={() => setIsMenuOpen(false)}
             >
-              Doctors
+              Booking
             </Link>
+            <Link
+              to="/videos"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Videos
+            </Link>
+
             <Link
               to="/contact"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
@@ -108,16 +161,20 @@ const Header = () => {
             >
               Contact
             </Link>
-            {/* <Link
-              to="/contact"
+
+             <Link
+              to="/doctorportal"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
               onClick={() => setIsMenuOpen(false)}
             >
-              Contact
-            </Link> */}
-            <button className="w-full mt-2 px-4 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700">
-              Book Appointment
-            </button>
+               Doctor Portal
+            </Link>
+          
+            <Link to={'/login'}>
+              <button className="ml-4 px-6 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors text-sm">
+                Sign-in
+              </button>
+           </Link>
           </div>
         </div>
       )}

@@ -9,7 +9,6 @@ export default function BookingStatus({ bookings = [] }) {
         {bookings.length} Booking(s) Found
       </h2>
 
-      {/* If no bookings */}
       {bookings.length === 0 && (
         <div className="bg-white shadow rounded-xl p-12 flex flex-col items-center text-center border border-gray-200">
           <Calendar className="h-16 w-16 text-gray-500 mb-4" />
@@ -19,14 +18,12 @@ export default function BookingStatus({ bookings = [] }) {
         </div>
       )}
 
-      {/* Booking List */}
       <div className="space-y-6">
         {bookings.map((item, index) => (
           <div
             key={index}
             className="bg-white shadow border border-gray-200 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
           >
-            {/* Left Section */}
             <div className="flex-1 space-y-2">
               <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 {item.doctor}
@@ -58,7 +55,6 @@ export default function BookingStatus({ bookings = [] }) {
               </div>
             </div>
 
-            {/* Right Section */}
             <div className="flex flex-col items-end gap-3">
               <span className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">
                 {item.status}

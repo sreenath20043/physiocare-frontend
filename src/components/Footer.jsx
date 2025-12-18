@@ -37,7 +37,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold text-gray-800">Contact</h3>
             <ul className="space-y-2 text-gray-600">
               <li>support@physiocare.com</li>
-              <li>+1 (555) 123-4567</li>
+              <li>+91 632808956</li>
               <li>Mon-Sat: 8AM - 8PM</li>
             </ul>
           </div>
@@ -54,6 +54,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+}
 
-export default Footer;
+export default Footer
