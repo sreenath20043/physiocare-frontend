@@ -16,3 +16,13 @@ export const loginUserAPI = async(reqBody)=>{
 export const GoogleloginUserAPI = async(reqBody)=>{
     return await commonAPI('POST',`${serverURL}/api/google-login`,reqBody,{})
 }
+
+//4 doctor register
+export const doctorRegisterUserAPI = async(reqBody)=>{
+    return await commonAPI('POST',`${serverURL}/api/doctor-register`,reqBody,{'Content-Type':'multipart/form-data'})
+}
+
+//5 get all doctors
+export const getAllDoctorsAPI = async()=>{
+    return await commonAPI('GET',`${serverURL}/api/doctors`,{},)
+}

@@ -91,7 +91,7 @@ function Auth({register}) {
         console.log(response);
         if (response.status == 200) {
           sessionStorage.setItem("userDetails",JSON.stringify(response.data.user));
-            //  sessionStorage.setItem( "token", JSON.stringify(response.data.token));
+             sessionStorage.setItem( "token", JSON.stringify(response.data.token));
           
           toast.success("Login successfully", {
             position: "bottom-right",
@@ -110,7 +110,7 @@ function Auth({register}) {
             }, 4000);
           }else if(response.data?.user?.role == "physiocareDoctor"){
                setTimeout(() => {
-              navigate("/");
+              navigate("/therapistspage/:id");
             }, 4000);
           }
            else {
@@ -156,9 +156,7 @@ function Auth({register}) {
     console.log(response);
     if (response.status == 200) {
       sessionStorage.setItem("userDetails", JSON.stringify(response.data.user));
-           sessionStorage.setItem(
-            "token",
-            JSON.stringify(response.data.token));
+           sessionStorage.setItem("token",JSON.stringify(response.data.token));
       toast.success("Login successfully", {
         position: "bottom-right",
         autoClose: 3000,
