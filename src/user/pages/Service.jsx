@@ -42,7 +42,7 @@ const services = [
   },
   {
     icon: <FaChild size={40} className="text-white" />,
-    title: "Pediatric Physiotherapy",
+    title: "Pediatric ‎ ‎  Physiotherapy",
     desc: "Specialized treatment for children with developmental, neurological, or orthopedic conditions.",
     points: ["Developmental delays", "Cerebral palsy care", "Congenital conditions", "Growth disorders"],
   },
@@ -56,7 +56,7 @@ const services = [
     icon: <FaRunning size={40} className="text-white" />,
     title: "Sports Physiotherapy",
     desc: "Performance optimization and injury prevention for athletes of all levels.",
-    points: ["Performance enhancement", "Injury prevention", "Quick recovery", "Strength training"],
+    points: ["Performance enhancement", "Injury prevention", "Quick recovery", "Strength training" ],
   },
   {
     icon: <FaHandsHelping size={40} className="text-white" />,

@@ -50,10 +50,10 @@ const DoctorRegister = () => {
       });
     } else {
       //call register user api
-       const updatedToken = token.replace(/"/g,"")
-      const reqHeader = {
-        Authorization : `Bearer${updatedToken}`
-      }
+       const updatedToken = token ? token.replace(/"/g,"") : ""
+       const reqHeader = {
+         Authorization : `Bearer ${updatedToken}`
+         }
 
       try {
         const formDataToSend = new FormData();
@@ -88,7 +88,6 @@ const DoctorRegister = () => {
             theme: "colored",
           });
 
-          // set empty state values after registation done
           setFormData({ username: "", email: "", password: "", number: "", specialization: "", experience: "", location: "", education: "", availability: "", session: "", fees: "",date:"", bio: "" });
           setProfileImage(null);
 
@@ -208,6 +207,9 @@ const DoctorRegister = () => {
                   <option>Psychologist</option>
                   <option>Orthopedic</option>
                   <option>Pediatrician</option>
+                  <option>Sports</option>
+                  <option>Cardiovascular & Pulmonary</option>
+                  <option>Oncology </option>
                 </select>
               </div>
             </div>

@@ -1,12 +1,12 @@
 // src/pages/FindTherapist.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import {
   FaSearch, FaFilter, FaStar, FaMapMarkerAlt,
   FaClock
 } from 'react-icons/fa';
 import { HiCheckCircle } from "react-icons/hi";
 import Header from '../../components/Header';
-import { CheckCircle, X } from "lucide-react";
+import { CheckCircle, Search, X } from "lucide-react";
 import Footer from '../../components/Footer';
 import { getAllDoctorsAPI } from '../../../services/allAPIs';
 
@@ -15,6 +15,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from 'react-router-dom';
 import { Button, Modal } from 'flowbite-react';
+import { searchContext } from '../../contextShareAPI/ContextShare';
+import { ToastContainer, toast } from 'react-toastify';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -44,11 +46,16 @@ const AllDoctors = () => {
 
   const [token,setToken]= useState('')
 
-  const [doctors, setDoctors] = useState([])
+  // to hold tempoary doctor details
 
-  useEffect(()=>{
-    setToken(sessionStorage.getItem('token'))
-  },[token])
+  const [tempdata, setTempData]=useState([])
+
+  const{searchKey , setSearchKey}=useContext(searchContext)
+  console.log(searchKey);
+  
+
+  // all doctors state
+  const [doctors, setDoctors] = useState([])
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -56,6 +63,7 @@ const AllDoctors = () => {
         const response = await getAllDoctorsAPI()
         if (response.status === 200) {
           setDoctors(response.data)
+          setTempData(response.data)// asign values to temp state
         }
       } catch (error) {
         console.log('Error fetching doctors:', error)
@@ -63,6 +71,56 @@ const AllDoctors = () => {
     }
     fetchDoctors()
   }, [])
+
+
+  const handleFilter=(category)=>{
+    console.log(category);
+    // if no category or 'All Specialties' selected, reset to full list
+    if (!category || category === 'All Specialties') {
+      setDoctors(tempdata);
+      return;
+    }
+
+    // filter by common fields (prefer `specialization`, fall back to `category`)
+    const filtered = tempdata.filter(item => {
+      const field = (item.specialization || item.category || '').toString().toLowerCase().trim();
+      return field === category.toLowerCase().trim();
+    });
+    setDoctors(filtered);
+  }
+
+  const [selectedCategory, setSelectedCategory] = useState('All Specialties');
+
+  // Handle search by doctor name
+  const handleSearch = () => {
+    if (!searchKey.trim()) {
+      // Show alert if search box is empty
+      // alert("Please fill");
+      toast.warning("please fill ", {
+              position: "top-center",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+      return;
+    }
+
+    // Filter doctors by name
+    const searchResults = tempdata.filter(doctor => 
+      doctor.username.toLowerCase().includes(searchKey.toLowerCase())
+    );
+    setDoctors(searchResults);
+    // Clear the search input after successful search
+    setSearchKey('');
+  };
+
+  useEffect(()=>{
+    setToken(sessionStorage.getItem('token'))
+  },[token])
 
   return (
     <>
@@ -103,21 +161,34 @@ const AllDoctors = () => {
                 type="text"
                 className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500"
                 placeholder="Search by name or specialty..."
+                value={searchKey}
+                onChange={(e)=>setSearchKey(e.target.value)}
               />
             </div>
 
-            <div className="flex items-center bg-gray-50 border border-gray-300 rounded-lg px-4">
-              <FaFilter className="text-gray-400 mr-2" />
-              <select className="bg-transparent py-3 focus:outline-none">
-                <option>All Specialties</option>
-                <option>Sports</option>
-                <option>Neuro</option>
-                <option>Ortho</option>
-                <option>Geriatric</option>
-              </select>
-            </div>
+              <div className="flex items-center bg-gray-50 border border-gray-300 rounded-lg px-4">
+                <FaFilter className="text-gray-400 mr-2" />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    const selected = e.target.value;
+                    setSelectedCategory(selected);
+                    handleFilter(selected);
+                  }}
+                  className="bg-transparent py-3 focus:outline-none"
+                >
+                  <option value="All Specialties">All Specialties</option>
+                  <option value="Cardiologist">Cardiologist</option>
+                  <option value="Neurologist">Neurologist</option>
+                  <option value="Psychologist">Psychologist</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Pediatrician">Pediatrician</option>
+                  <option value="Cardiovascular & Pulmonary">Cardiovascular & Pulmonary</option>
+                  <option value="Oncology">Oncology</option>
+                </select>
+              </div>
 
-            <Button className="px-8 bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSearch} className="px-8 bg-blue-600 hover:bg-blue-700">
               Search
             </Button>
           </div>
@@ -149,12 +220,12 @@ const AllDoctors = () => {
               <div className="relative h-52">
                 <img
                   src={doctor.profileImage ? `http://localhost:3000/uploads/${doctor.profileImage}` : "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600"}
-                  className="h-full w-74 object-cover rounded-xl"
+                 className="h-full w-full object-cover rounded-t-2xl"
                   alt=""
                 />
-                <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow flex items-center gap-1">
+                {/* <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow flex items-center gap-1">
                   <FaStar className="text-yellow-400" /> 4.9
-                </div>
+                </div> */}
               </div>
 
               <div className="p-5">
@@ -241,7 +312,7 @@ const AllDoctors = () => {
                     className="rounded-xl w-full object-cover" 
                   />
                   <div className="w-full mt-6 p-6 text-center border rounded-xl">
-                    <h2 className="text-3xl font-bold text-[#0BB5FF]">${selectedDoctor?.fees || 100}</h2>
+                    <h2 className="text-3xl font-bold text-[#0BB5FF]">₹{selectedDoctor?.fees || 100}</h2>
                     <p className="text-gray-500">Per Session</p>
                     <Link to={`/booking/${selectedDoctor?._id}`}>
                       <Button className="w-full mt-4 bg-gradient-to-r from-[#0BB5FF] to-[#15D39E] text-white font-semibold"> Book Appointment </Button>
@@ -310,7 +381,17 @@ const AllDoctors = () => {
       }
 
               <Footer />
-
+      <ToastContainer
+              position="top-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored" />
     </>
   );
 };

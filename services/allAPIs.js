@@ -1,3 +1,4 @@
+
 import commonAPI from "./commonAPI";
 import { serverURL } from "./serverURL";
 
@@ -25,4 +26,53 @@ export const doctorRegisterUserAPI = async(reqBody)=>{
 //5 get all doctors
 export const getAllDoctorsAPI = async()=>{
     return await commonAPI('GET',`${serverURL}/api/doctors`,{},)
+}
+
+//6 get doctor by ID
+export const getDoctorByIdAPI = async(id)=>{
+    return await commonAPI('GET',`${serverURL}/api/doctor/${id}`,{},)
+}
+
+//7 get doctor profile 
+export const getDoctorProfileAPI = async()=>{
+    const token = JSON.parse(sessionStorage.getItem('token'))
+    const reqHeader = {
+        'Authorization': `Bearer ${token}`
+    }
+    return await commonAPI('GET',`${serverURL}/api/doctor/profile`,{},reqHeader)
+}
+
+//8 doctorbooking
+export const doctorBookingAPI = async(reqBody,reqHeader)=>{
+    return await commonAPI('POST',`${serverURL}/api/doctor-booking`,reqBody,reqHeader)
+}
+
+//9 get all booking
+export const getAllBookingAPI = async (reqHeader) => {
+  return await commonAPI( "GET",`${serverURL}/api/doctorbooking`,{},reqHeader)
+};
+
+//10 cancel booking
+export const cancelBookingAPI = async(bookingId)=>{
+    return await commonAPI('DELETE',`${serverURL}/api/cancel-booking/${bookingId}`,{},{})
+}
+
+//11 get all users 
+export const getAllUsersAPI = async () => {
+    return await commonAPI('GET', `${serverURL}/api/users`, {}, {})
+}
+
+//12 update admin (patients)
+export const updateAdminAPI = async (reqBody,reqHeader) => {
+    return await commonAPI('PUT', `${serverURL}/api/admin/updateAdmin`,reqBody,reqHeader)
+}
+
+//13 Get Doctor Bookings
+export const getDoctorBookingsAPI = async (token) => {
+  return await commonAPI("GET",`${serverURL}/api/doctor-bookings`, "",{Authorization: `Bearer ${token}`});
+};
+
+//1 update admin (patients)
+export const updateUserAPI = async (reqBody,reqHeader) => {
+    return await commonAPI('PUT', `${serverURL}/api/user/updateUser`,reqBody,reqHeader)
 }

@@ -17,6 +17,11 @@ import AdminHeader from './admin/pages/Admin-Header'
 import AdminPage from './admin/pages/Admin-Page'
 import Preloader from './pages/Preloader'
 import { useEffect, useState } from 'react'
+import Paymenterror from './user/pages/Paymenterror'
+import Paymentsuccess from './user/pages/Paymentsuccess'
+import Profile from './user/components/Profile'
+import Pagenf from './pages/Pagenf'
+
 
 function App() {
 
@@ -45,6 +50,10 @@ function App() {
       <Route path='booking/:id' element={<Booking/>}/>
       <Route path='bookingstatus' element={<BookingStatus/>}/>
       <Route path='doctorportal' element={<DoctorRegister/>}/>
+      <Route path='paymenterror' element={<Paymenterror/>}/>
+      <Route path='paymentsucces' element={<Paymentsuccess/>}/>
+      <Route path='profile' element={<Profile/>}/>
+      <Route path='*' element={<Pagenf/>}/>
 
       {/* therapists */}
       <Route path='therapistspage/:id' element={<Therapistspage/>}/>

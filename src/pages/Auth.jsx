@@ -30,7 +30,6 @@ function Auth({register}) {
         theme: "colored",
       });
     } else {
-      //call register user api
       try {
         const response = await registerUserAPI(userData);
         console.log(response);
@@ -46,7 +45,6 @@ function Auth({register}) {
             theme: "colored",
           });
 
-          // set empty state values after registation done
           setUserData({ username: "", email: "", password: "" });
 
           setTimeout(() => {
@@ -103,6 +101,8 @@ function Auth({register}) {
             progress: undefined,
             theme: "colored",
           });
+           
+          
 
           if(response.data?.user?.role == "physiocareAdmin") {
             setTimeout(() => {
@@ -110,7 +110,7 @@ function Auth({register}) {
             }, 4000);
           }else if(response.data?.user?.role == "physiocareDoctor"){
                setTimeout(() => {
-              navigate("/therapistspage/:id");
+              navigate(`/therapistspage/${response.data.user._id}`);
             }, 4000);
           }
            else {
