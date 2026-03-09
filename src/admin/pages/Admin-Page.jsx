@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AdminHeader from './Admin-Header'
 import { Tabs } from "flowbite-react";
-import { getDoctorByIdAPI, getAllDoctorsAPI, getAllBookingAPI, getAllUsersAPI, updateAdminAPI } from '../../../services/allAPIs'
+import { getDoctorByIdAPI, getAllDoctorsAPI, getAllBookingAPI, getAllBookingsForAdminAPI, getAllUsersAPI, updateAdminAPI } from '../../../services/allAPIs'
 import {
   HiOutlineUserAdd,
   HiOutlineUsers,
@@ -46,17 +46,26 @@ function AdminPage() {
   //all booking
   useEffect(() => {
     const fetchAllBooking = async () => {
+      const updatedToken = token ? token.replace(/"/g, "") : "";
+      const reqHeader = {
+        Authorization: `Bearer ${updatedToken}`,
+      };
+      
       try {
-        const response = await getAllBookingAPI();
+        const response = await getAllBookingsForAdminAPI(reqHeader);
         if (response.status === 200) {
           setAllBookings(response.data);
+          console.log("Admin bookings loaded:", response.data);
         }
       } catch (error) {
         console.log('Error fetching bookings:', error);
       }
     };
-    fetchAllBooking();
-  }, [id]);
+    
+    if (token) {
+      fetchAllBooking();
+    }
+  }, [token]);
 
   //all user
   useEffect(() => {
@@ -109,12 +118,20 @@ function AdminPage() {
               <div className="p-4 bg-white rounded-lg shadow w-full">
                 <div className="border rounded-xl p-4 sm:p-6">
 
-                  <h2 className="text-2xl font-semibold text-gray-900">
-                    All boking
-                  </h2>
-                  <p className="text-gray-500 mb-6">
-                    View all boking
-                  </p>
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h2 className="text-2xl font-semibold text-gray-900">
+                        All Bookings
+                      </h2>
+                      <p className="text-gray-500">
+                        View all bookings
+                      </p>
+                    </div>
+                    <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full">
+                      <span className="text-lg font-semibold">{allBooking.length}</span>
+                      <span className="text-sm ml-1">Total Bookings</span>
+                    </div>
+                  </div>
 
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse min-w-[700px]">
@@ -122,8 +139,9 @@ function AdminPage() {
                         <tr className="border-b text-left text-gray-600">
                           <th className="py-3 px-2 font-medium">Name</th>
                           <th className="py-3 px-2 font-medium">Email</th>
-                          <th className="py-3 px-2 font-medium">number</th>
-                          <th className="py-3 px-2 font-medium">Registered</th>
+                          <th className="py-3 px-2 font-medium">Doctor</th>
+                          <th className="py-3 px-2 font-medium">Date</th>
+                          <th className="py-3 px-2 font-medium">Session</th>
                         </tr>
                       </thead>
 
@@ -131,10 +149,11 @@ function AdminPage() {
                         {Array.isArray(allBooking) && allBooking.length > 0 ? (
                           allBooking.map((booking, idx) => (
                             <tr key={idx} className="border-b hover:bg-gray-50">
-                              <td className="py-4 px-2 font-medium text-gray-900">{booking.username}</td>
-                              <td className="py-4 px-2 text-gray-700">{booking.email}</td>
-                              <td className="py-4 px-2">{booking.session || '-'}</td>
+                              <td className="py-4 px-2 font-medium text-gray-900">{booking.username || booking.userId?.username || '-'}</td>
+                              <td className="py-4 px-2 text-gray-700">{booking.email || booking.userId?.email || '-'}</td>
+                              <td className="py-4 px-2">{booking.doctorId?.username || booking.doctorName || '-'}</td>
                               <td className="py-4 px-2">{booking.date || '-'}</td>
+                              <td className="py-4 px-2">{booking.session || '-'}</td>
                             </tr>
                           ))
                         ) : (

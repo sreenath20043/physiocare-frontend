@@ -52,6 +52,11 @@ export const getAllBookingAPI = async (reqHeader) => {
   return await commonAPI( "GET",`${serverURL}/api/doctorbooking`,{},reqHeader)
 };
 
+//9.1 get all bookings for admin
+export const getAllBookingsForAdminAPI = async (reqHeader) => {
+  return await commonAPI("GET", `${serverURL}/api/admin/all-bookings`, {}, reqHeader)
+};
+
 //10 cancel booking
 export const cancelBookingAPI = async(bookingId)=>{
     return await commonAPI('DELETE',`${serverURL}/api/cancel-booking/${bookingId}`,{},{})

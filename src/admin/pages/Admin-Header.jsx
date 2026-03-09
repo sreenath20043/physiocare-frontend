@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllDoctorsAPI, getAllBookingAPI, getAllUsersAPI } from '../../../services/allAPIs'
+import { getAllDoctorsAPI, getAllBookingAPI, getAllUsersAPI, getAllBookingsForAdminAPI } from '../../../services/allAPIs'
 import { Card, Button } from "flowbite-react";
 import {
   HiOutlineShieldCheck,
@@ -15,6 +15,11 @@ function AdminHeader() {
   const [doctors, setDoctors] = useState([]);
   const [doctorBookings, setDoctorBookings] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [token, setToken] = useState('')
+
+  useEffect(() => {
+    setToken(sessionStorage.getItem("token"))
+  }, [])
 
   useEffect(() => {
     const fetchAllDoctors = async () => {
@@ -32,17 +37,26 @@ function AdminHeader() {
 
   useEffect(() => {
     const fetchAllBooking = async () => {
+      const updatedToken = token ? token.replace(/"/g, "") : "";
+      const reqHeader = {
+        Authorization: `Bearer ${updatedToken}`,
+      };
+      
       try {
-        const response = await getAllBookingAPI()
+        const response = await getAllBookingsForAdminAPI(reqHeader);
         if (response.status === 200) {
-          setDoctorBookings(response.data)
+          setDoctorBookings(response.data);
+          console.log("Admin header bookings loaded:", response.data);
         }
       } catch (error) {
-        console.log('Error fetching bookings:', error)
+        console.log('Error fetching bookings:', error);
       }
+    };
+    
+    if (token) {
+      fetchAllBooking();
     }
-    fetchAllBooking()
-  }, [id])
+  }, [token]);
 
   useEffect(() => {
     const fetchAllPatients = async () => {
