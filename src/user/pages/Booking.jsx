@@ -4,6 +4,7 @@ import { TextInput, Label, Radio, Textarea, Select, Button, Card } from "flowbit
 import { toast, ToastContainer } from "react-toastify";
 import { doctorBookingAPI, getAllBookingAPI, getDoctorByIdAPI } from "../../../services/allAPIs";
 import { loadStripe } from "@stripe/stripe-js";
+import { serverURL } from "../../../services/serverURL";
 
 function Booking() {
   const { id } = useParams();
@@ -383,7 +384,7 @@ const handleStripePayment = async () => {
 
             <div className="flex items-center gap-4">
               <img
-                src={doctor?.profileImage ? `http://localhost:3000/uploads/${doctor.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ-vJs-4Nsrp82zD1yTdth39lp-SB9POFzXw&s"}
+                src={doctor?.profileImage ? `${serverURL}/uploads/${doctor.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ-vJs-4Nsrp82zD1yTdth39lp-SB9POFzXw&s"}
                 alt="Doctor"
                 className="rounded-full w-14 h-14 object-cover"
               />
