@@ -30,8 +30,15 @@ useEffect(() => {
 
     const cleanedToken = token ? token.replace(/"/g, '') : '';
 
-    if (!pendingBooking || !cleanedToken) return;
+    if (!pendingBooking) {
+  console.log("No pending booking found");
+  return;
+}
 
+if (!cleanedToken) {
+  console.log("Token missing");
+  return;
+}
     const reqHeader = {
       Authorization: `Bearer ${cleanedToken}`,
       "Content-Type": "application/json"
