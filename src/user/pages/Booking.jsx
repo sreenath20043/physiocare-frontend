@@ -10,6 +10,7 @@ function Booking() {
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [token, setToken] = useState('')
+  const [loading, setLoading] = useState(true)
   const [bookingData, setBookingData] = useState({
     username: "",
     email: "",
@@ -25,49 +26,6 @@ function Booking() {
 
 
 const stripePromise = loadStripe("pk_test_51T3CseFpVLyfwF64okYguWrweshlE3JR5qa9kZMCAVkhdQ4930i4di0v1bmIkWwi9O3Yw3vnEhZIUFOXc8Ffx0Ul00lx1m3KeQ");
-
-// const handleStripePayment = async () => {
-
-//   if (
-//     !bookingData.username ||
-//     !bookingData.email ||
-//     !bookingData.number ||
-//     !bookingData.session ||
-//     !bookingData.date ||
-//     !bookingData.time ||
-//     !bookingData.description
-//   ) {
-//     toast.warning("Please fill all fields");
-//     return;
-//   }
-
-//   // Save temporarily
-//   sessionStorage.setItem(
-//     "pendingBooking",
-//     JSON.stringify({
-//       doctorId: id,
-//       ...bookingData
-//     })
-//   );
-
-//   // Create stripe session
-//   const res = await fetch(
-//     "http://localhost:3000/api/stripe/create-checkout-session",
-//     {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({
-//         doctorId: id,
-//         fees: doctor?.fees,
-//         bookingData
-//       }),
-//     }
-//   );
-
-//   const data = await res.json();
-
-//   window.location.href = data.url;   
-// };
 
 const handleStripePayment = async () => {
 
@@ -85,6 +43,8 @@ const handleStripePayment = async () => {
   }
 
   try {
+    console.log("Starting payment process...");
+    console.log("Using serverURL:", serverURL);
 
     sessionStorage.setItem(
       "pendingBooking",
@@ -94,133 +54,48 @@ const handleStripePayment = async () => {
       })
     );
 
-    const res = await fetch("http://localhost:3000/api/stripe/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        doctorId: id,
-        fees: doctor?.fees,
-      }),
-    });
+    // Force use of deployed backend URL
+    // const backendURL = "https://physiocare-backend-2.onrender.com";
+    // const stripeUrl = `${backendURL}/api/stripe/create-checkout-session`;
+    
+    const stripeUrl = `${serverURL}/api/stripe/create-checkout-session`;
 
+    console.log("Calling Stripe API at:", stripeUrl);
+
+   const res = await fetch(`${serverURL}/api/stripe/create-checkout-session`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    doctorId: id,
+    fees: doctor?.fees
+  })
+});
+
+    console.log("Response status:", res.status);
     const data = await res.json();
+    console.log("Response data:", data);
+    
+    if (data.error) {
+      throw new Error(data.error);
+    }
 
-    window.location.href = data.url;
+    if (data.url) {
+      console.log("Redirecting to Stripe:", data.url);
+      window.location.href = data.url;
+    } else {
+      throw new Error("No payment URL received");
+    }
 
   } catch (err) {
-    toast.error("Payment initialization failed");
+    console.error("Payment error:", err);
+    toast.error(`Payment failed: ${err.message}`);
   }
 };
 
-// const handleStripePayment = async () => {
-//   if (
-//     !bookingData.username ||
-//     !bookingData.email ||
-//     !bookingData.number ||
-//     !bookingData.session ||
-//     !bookingData.date ||
-//     !bookingData.time ||
-//     !bookingData.description
-//   ) {
-//     toast.warning("Fill all fields");
-//     return;
-//   }else{
-
-//      const updatedToken = token ? token.replace(/"/g, "") : "";
-//       const reqHeader = {
-//         Authorization: `Bearer ${updatedToken}`
-//       };
-//       console.log(reqHeader);
-
-//   try {
-
-//     sessionStorage.setItem(
-//   "pendingBooking",
-//   JSON.stringify({
-//     doctorId: id,   
-//     ...bookingData
-//   })
-// );
-
-//    const res = await fetch("http://localhost:3000/api/stripe/create-checkout-session", {
-//   method: "POST",
-//   headers: { "Content-Type": "application/json" },
-//   body: JSON.stringify({
-//     doctorId: id,
-//     fees: doctor?.fees,
-//     bookingData,
-//   }),
-// });
-
-// const data = await res.json();
-// window.location.href = data.url;
-
-  
-//         const bookingDataToSend = {
-//           username: bookingData.username,
-//           email: bookingData.email,
-//           number: bookingData.number,
-//           session: bookingData.session,
-//           date: bookingData.date,
-//           time: bookingData.time,
-//           description: bookingData.description
-//         };
-
-//         // Store userDetails in sessionStorage for BookingStatus filtering
-//         sessionStorage.setItem("userDetails", JSON.stringify({
-//           username: bookingData.username,
-//           email: bookingData.email,
-//           number: bookingData.number
-//         }));
-
-//         const response = await getUserBookingsAPI(bookingDataToSend, reqHeader);
-//         console.log(response);
-//         if (response.status == 201) {
-         
-
-//           // set empty state values after registration done
-//           setBookingData({ username: "", email: "", number: "", session: "", date: "", time: "", description: "" });
-
-//           setTimeout(() => {
-//             navigate("/alldoctors");
-//           }, 3000);
-//         } else {
-//           toast.error("Already Booking...", {
-//             position: "bottom-right",
-//             autoClose: 3000,
-//             hideProgressBar: false,
-//             closeOnClick: false,
-//             pauseOnHover: true,
-//             draggable: true,
-//             progress: undefined,
-//             theme: "colored",
-//           });
-
-//           console.log(response.response.data.message);
-//         }
-      
-
-//   } catch (err) {
-//     console.error(err);
-//     toast.error("Payment failed");
-//   }
-//     }
-// };
-
   useEffect(() => setToken(sessionStorage.getItem("token")), []);
 
-// useEffect(() => {
-//   const fetchBookings = async () => {
-//     const token = sessionStorage.getItem("token");
-//     const result = await getUserBookingsAPI(token);
-
-//     if (result.status === 200) {
-//       setBookingData(result.data);
-//     }
-//   };
-
-//   fetchBookings();
-// }, []);
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -384,7 +259,7 @@ const handleStripePayment = async () => {
 
             <div className="flex items-center gap-4">
               <img
-                src={doctor?.profileImage ? `${serverURL}/uploads/${doctor.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ-vJs-4Nsrp82zD1yTdth39lp-SB9POFzXw&s"}
+                src={doctor?.profileImage ? `http://localhost:3000/uploads/${doctor.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ-vJs-4Nsrp82zD1yTdth39lp-SB9POFzXw&s"}
                 alt="Doctor"
                 className="rounded-full w-14 h-14 object-cover"
               />

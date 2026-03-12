@@ -51,7 +51,7 @@ function App() {
       <Route path='bookingstatus' element={<BookingStatus/>}/>
       <Route path='doctorportal' element={<DoctorRegister/>}/>
       <Route path='paymenterror' element={<Paymenterror/>}/>
-      <Route path='paymentsucces' element={<Paymentsuccess/>}/>
+      <Route path='paymentsuccess' element={<Paymentsuccess/>}/>
       <Route path='profile' element={<Profile/>}/>
       <Route path='*' element={<Pagenf/>}/>
 
