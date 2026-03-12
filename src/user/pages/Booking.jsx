@@ -85,7 +85,6 @@ const handleStripePayment = async () => {
 
   try {
 
-    // Save temporarily
     sessionStorage.setItem(
       "pendingBooking",
       JSON.stringify({

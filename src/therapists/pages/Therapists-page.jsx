@@ -189,7 +189,7 @@ function Therapistspage() {
                     className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border rounded-xl p-5 mb-4"
                   >
                     <div className="flex gap-4">
-                      <Avatar size="lg" rounded />
+                      <Avatar  img={patient.profile} size="lg" rounded />
                       <div>
                         <h3 className="text-lg font-semibold">{patient.username}</h3>
                         <p className="text-gray-500 text-sm">{patient.email}</p>

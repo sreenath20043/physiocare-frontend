@@ -70,10 +70,8 @@ const Footer = () => {
 
         </div>
 
-        {/* Divider */}
         <hr className="my-10 border-gray-200" />
 
-        {/* Copyright */}
         <p className="text-center text-gray-500 text-sm">
           © {new Date().getFullYear()} PhysioCare. All rights reserved.
         </p>

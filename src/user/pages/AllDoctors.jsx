@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { Button, Modal } from 'flowbite-react';
 import { searchContext } from '../../contextShareAPI/ContextShare';
 import { ToastContainer, toast } from 'react-toastify';
+import { serverURL } from '../../../services/serverURL';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -219,7 +220,7 @@ const AllDoctors = () => {
             >
               <div className="relative h-52">
                 <img
-                  src={doctor.profileImage ? `http://localhost:3000/uploads/${doctor.profileImage}` : "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600"}
+                  src={doctor.profileImage ? `${serverURL}/uploads/${doctor.profileImage}` : "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600"}
                  className="h-full w-full object-cover rounded-t-2xl"
                   alt=""
                 />
